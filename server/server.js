@@ -1,41 +1,23 @@
-import express from 'express'
-import { Server, Socket } from 'socket.io';
-import { createServer } from 'http';
-
+const express = require('express')
+const { chats } = require('./data/data')
+const dotenv = require('dotenv')
 const app = express();
-const port = 3000;
 
-const server = createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ['GET', 'POST'],
-        credentials: true
-    },
-})
+const port = process.env.PORT || 3000
+dotenv.config();
 
 app.get('/', (req, res) => {
-    res.send("Hello world");
+    res.send("Api is running")
 })
 
-io.on("connection", (socket) => {
-    console.log("User Connected", socket.id);
-    socket.on("message", ({ message, room }) => {
-        console.log({ message, room })
-        io.to(room).emit("recieve", message)
-    });
-
-    // console.log("Id", socket.id);
-    // // emit se message sirf ussi socket ko jayega 
-    // socket.emit("welcome", `Welcome to the server , ${socket.id}`)
-    // // brodcast se 
-    // socket.broadcast.emit("welcom", `${socket.id} joinedd the server`)
-
-    socket.on('disconnect', () => {
-        console.log("User Disconneted", socket.id);
-    })
+app.get('/api/chat', (req, res) => {
+    res.send(chats)
 })
-server.listen(port, () => {
-    console.log(`server started at localhost://${port}`)
+
+app.get('/api/chat/:id', (req, res) => {
+    // console.log(req.params.id)
+    const singleChat = chats.find(c => c._id === req.params.id);
+    res.send(singleChat)
 })
+
+app.listen(port, () => console.log(`the server is running at localhost ${port}`))
