@@ -15,18 +15,26 @@ const io = new Server(server, {
     },
 })
 
-
 app.get('/', (req, res) => {
     res.send("Hello world");
 })
 
 io.on("connection", (socket) => {
-    console.log("User Connected");
-    console.log("Id", socket.id);
-    // emit se message sirf ussi socket ko jayega 
-    socket.emit("welcome", `Welcome to the server , ${socket.id}`)
-    // brodcast se 
-    socket.broadcast.emit("welcom", `Welcome to the server , ${socket.id}`)
+    console.log("User Connected", socket.id);
+    socket.on("message", ({ message, room }) => {
+        console.log({ message, room })
+        io.to(room).emit("recieve", message)
+    });
+
+    // console.log("Id", socket.id);
+    // // emit se message sirf ussi socket ko jayega 
+    // socket.emit("welcome", `Welcome to the server , ${socket.id}`)
+    // // brodcast se 
+    // socket.broadcast.emit("welcom", `${socket.id} joinedd the server`)
+
+    socket.on('disconnect', () => {
+        console.log("User Disconneted", socket.id);
+    })
 })
 server.listen(port, () => {
     console.log(`server started at localhost://${port}`)
