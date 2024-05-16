@@ -1,10 +1,11 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import { CssBaseline } from "@mui/material";
 import { BrowserRouter } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <CssBaseline />
-    <App />
-  </BrowserRouter>
+  <ChakraProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </ChakraProvider>
 );
